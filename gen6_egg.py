@@ -56,13 +56,13 @@ total_frames = int(input("Total Frames: "))
 
 mt = MT.MT(seed)
 rngList = RNGPool.RNGList(mt,128)
-rngList.advanceStates(starting_frame+1)
+rngList.advanceStates(starting_frame)
 
 
-print("PID, EC, IVs, Nature, Gender, Ability, Seeds")
-for _ in range(total_frames):
+print("Frame, PID, EC, IVs, Nature, Gender, Ability, Seeds")
+for frame in range(total_frames):
     pid = rngList.getValue()
     seed_0 = rngList.getValue()
     seed_1 = rngList.getValue()
-    print(*seeds_to_state(pid,seed_0,seed_1),hex(seed_1)[2:]+hex(seed_0)[2:])
+    print(frame+starting_frame,*seeds_to_state(pid,seed_0,seed_1),hex(seed_1)[2:]+hex(seed_0)[2:])
     rngList.advanceState()
