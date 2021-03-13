@@ -1,3 +1,5 @@
+# Proof of concept script to show how to search for multi shiny hordes, extremely slow since python
+
 import MT
 import RNGPool
 import math
