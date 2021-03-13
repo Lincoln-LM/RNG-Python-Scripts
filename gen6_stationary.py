@@ -6,8 +6,8 @@ starting_frame = int(input("Starting Frame: "))
 total_frames = int(input("Total Frames: "))
 
 mt = MT.MT(seed)
-mt.advance(starting_frame+1)
 rngList = RNGPool.RNGList(mt,128)
+rngList.advanceStates(starting_frame+1)
 
 for frame in range(total_frames):
     rngList.advanceFrames(60)

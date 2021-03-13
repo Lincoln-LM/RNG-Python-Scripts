@@ -7,8 +7,8 @@ starting_frame = int(input("Starting Frame: "))
 total_frames = int(input("Total Frames: "))
 
 mt = MT.MT(seed)
-mt.advance(starting_frame)
 rngList = RNGPool.RNGList(mt,128)
+rngList.advanceStates(starting_frame+1)
 
 def rand(n):
     return (rngList.getValue()*n>>32) & 0xFFFFFFFF
