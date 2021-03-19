@@ -42,3 +42,11 @@ class TinyMT:
             t0 ^= 0x3793fdff
         
         return t0
+    
+    def display_state(self):
+        display = []
+        i = 0
+        for n in self.state:
+            display.append("["+str(i)+"] "+hex(n)[2:].zfill(8))
+            i += 1
+        return display
