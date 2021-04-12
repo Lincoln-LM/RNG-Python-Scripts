@@ -1,4 +1,4 @@
-# Gen 4 Unown RNG
+# Gen 4 Unown RNG - Don't fully trust this not updated
 
 import LCRNG
 from tools import getIVs
