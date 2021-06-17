@@ -56,15 +56,7 @@ starting_seed = int(input("Starting Seed: 0x"),16)
 last_seed = int(input("Last Seed: 0x"),16)
 total_frames = int(input("Total Frames: "))
 
-correct_list = """88888888
-98888888
-89888888
-88988888
-88898888
-88889888
-88888988
-88888898
-88888889""".split("\n")
+correct_list = """a330a87d""".split("\n")
 
 print("Seed, Frame, PID, EC, IVs, Nature, Gender, Ability, Seeds")
 
