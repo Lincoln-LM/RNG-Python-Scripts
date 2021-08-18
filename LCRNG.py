@@ -65,7 +65,7 @@ class ARNG:
         self.seed = seed
 
     def nextUInt(self):
-        self.seed = (self.seed * 1812433253 + 1) & 0xffffffff
+        self.seed = (self.seed * 0x6c078965 + 0x1) & 0xffffffff
         return self.seed
 
     def nextUShort(self):
@@ -75,3 +75,32 @@ class ARNG:
         for _ in range(advances):
             self.nextUInt()
         
+class MRNG:
+    def __init__(self, seed):
+        self.seed = seed
+    
+    def nextUInt(self):
+        self.seed = (self.seed * 0x41C64E6D + 0x3039) & 0xffffffff
+        return self.seed
+    
+    def nextUShort(self):
+        return self.nextUInt() >> 16
+    
+    def advance(self, advances):
+        for _ in range(advances):
+            self.nextUInt()
+        
+class MRNGR:
+    def __init__(self, seed):
+        self.seed = seed
+    
+    def nextUInt(self):
+        self.seed = (self.seed * 0xEEB9EB65 + 0xFC77A683) & 0xffffffff
+        return self.seed
+    
+    def nextUShort(self):
+        return (self.nextUInt() >> 16) & 0x7FFF
+    
+    def advance(self, advances):
+        for _ in range(advances):
+            self.nextUInt()
