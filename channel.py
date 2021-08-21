@@ -1,4 +1,4 @@
-# Script to display jirachis you can hit
+# Script to display jirachis you can hit, many functions taken from PokeFinder
 
 import LCRNG
 
@@ -54,16 +54,18 @@ def validate_menu(seed):
         mask |= 1 << num
 
     return True
-seed = 0x3B03D5CF
+
+seed = int(input("Seed: 0x"), 16)
+start = int(input("Starting Advance: "))
+advances = int(input("Advances: "))
 rng = LCRNG.XDRNG(seed)
+rng.advance(start)
 print(f"{seed:X}")
 print("Advance, Seed, Shiny, SID, PID, Nature, IVs")
-for advance in range(100):
+for advance in range(advances):
     if validate_jirachi(rng.seed):
         filter = True
         go = LCRNG.XDRNG(rng.seed)
-        # Generated 12 calls after generation
-        # go.advance(12)
 
         tid = 40122
         sid = go.nextUShort()
@@ -109,5 +111,5 @@ for advance in range(100):
         #     continue
 
         if filter:
-            print(f"{advance}, {rng.seed:08X}, {shiny}, {sid:05}, {pid:08X}, {nature}, {str(ivs)}")
+            print(f"{start+advance}, {rng.seed:08X}, {shiny}, {sid:05}, {pid:08X}, {nature}, {str(ivs)}")
     rng.nextUInt()

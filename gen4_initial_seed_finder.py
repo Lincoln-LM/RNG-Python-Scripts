@@ -1,4 +1,4 @@
-# Script to get Gen 3 initial seeds from a target seed
+# Script to get Gen 4 initial seeds from a target seed
 
 import LCRNG
 
