@@ -1,6 +1,8 @@
 import LCRNG
 from tools import getIVs
-from RNGCache import recoverLower16BitsPID
+from RNGCache import RNGCache
+
+cache = RNGCache
 
 def getInitial(seed):
     advances = 0
@@ -88,7 +90,7 @@ og_pid_high = pid1_high
 og_pid_low = pid2_low
 
 while len(seeds1) == 0:
-    origin = recoverLower16BitsPID(pid1_high)
+    origin = cache.recoverLower16BitsPID(pid1_high)
     for seed in origin:
         go = LCRNG.PokeRNGR(seed)
         seed = go.nextUInt()
@@ -100,7 +102,7 @@ while len(seeds1) == 0:
             exit(0)
 
 while len(seeds2) == 0:
-    origin = recoverLower16BitsPID(pid2_low)
+    origin = cache.recoverLower16BitsPID(pid2_low)
     for seed in origin:
         go = LCRNG.PokeRNGR(seed)
         seed = go.nextUInt()
