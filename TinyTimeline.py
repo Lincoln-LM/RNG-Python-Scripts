@@ -3,9 +3,10 @@ from TinyMT import TinyMT
 class TinyTimeline(TinyMT):
     def __init__(self, initial_state, advances, index, tiny_advancers):
         self.advances = advances
-        self.index = index
         self.tiny_advancers = tiny_advancers
+        self.index = 0
         super().__init__(state=initial_state)
+        self.advance(index)
 
     def next_time(self):
         # tiny_advancer = [tiny_advance_type*,last_end_advance]
