@@ -4,6 +4,7 @@ class TinyMT:
     def __init__(self, seed = 0, state = [0,0,0,0]):
         self.state = state
         if state == [0,0,0,0]:
+            self.state = [seed, 0x8f7011ee, 0xfc78ff1f, 0x3793fdff]
             for i in range(1,8):
                 self.state[i & 3] ^= (0x6c078965 * (self.state[(i - 1) & 3] ^ (self.state[(i - 1) & 3] >> 30)) + i) & 0xFFFFFFFF
         
