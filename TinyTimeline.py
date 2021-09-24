@@ -1,13 +1,16 @@
 from TinyMT import TinyMT
 
 class TinyTimeline(TinyMT):
-    def __init__(self, initial_state, advances, index, tiny_advancers):
-        self.advances = advances
+    def __init__(self, initial_state, index, tiny_advancers):
+        self.advances = 0
         self.tiny_advancers = tiny_advancers
+        for i,tiny_advancer in enumerate(self.tiny_advancers):
+            self.tiny_advancers[i][1] = tiny_advancer[1] - 2
+        print(self.tiny_advancers)
         self.index = 0
         self.times_cache = []
         super().__init__(state=initial_state)
-        self.advance(index)
+        self.advance(index-1)
 
     def generate_times(self):
         # tiny_advancer = [tiny_advance_type*,last_end_advance]
