@@ -1,4 +1,5 @@
 # proof of concept jirachi searcher
+import progressbar
 
 gender_dict = {0x0:"Male",0x1:"Female"}
 clock_dict = {0x1:"00:00",0x180000:"XX:00",0x3C170000:"XX:XX"}
@@ -9,6 +10,10 @@ style_dict = {0x0:"Shift",0x200:"Set"}
 sound_dict = {0x0:"Mono",0x100:"Stereo"}
 button_dict = {0x0:"Normal",0x1000000:"LR",0x2000000:"L=A"}
 frame_dict = {0:"1",0x8:"2",0x10:"3",0x18:"4",0x20:"5",0x28:"6",0x30:"7",0x38:"8",0x40:"9",0x48:"10",0x50:"11",0x58:"12",0x60:"13",0x68:"14",0x70:"15",0x78:"16",0x80:"17",0x88:"18",0x90:"19",0x98:"20"}
+
+max_count = 20*3*2*2*2*3
+total_count = 0
+
 
 def u32tou16(val):
     val = val & 0xFFFFFFFF
@@ -31,12 +36,12 @@ def nametovalue(name):
 
 def gen(cur, val, start, end, arr, target, star):
     if start == end:
-        global c
+        global c, min_mf, min_s
         val = u32tou16(val+star)
         if val not in c:
             global close
             c.append(val)
-            if close[0] < val <= target:
+            if close[0] < val <= (target - min_mf - min_s*0x100)&0xFFFF:
                 close = (val, cur)
                 return cur
         return ""
@@ -72,7 +77,7 @@ close = (0, [])
 
 start = 0x10
 attr = []
-
+print("---Search Settings---")
 genderS = int(input("Include Gender? (1/0):"))
 clockS = int(input("Include Clock Settings? (1/0):"))
 starterS = int(input("Include Starters? (1/0):"))
@@ -82,6 +87,7 @@ name = input("Name:")
 
 n = name
 name = nametovalue(name)
+print(hex(name))
 
 attr.append(tid<<16)
 attr.append(sid)
@@ -94,6 +100,7 @@ if not genderS:
     dicts2.append(gender_dict)
     m2.append(gender)
 else:
+    max_count *= 2
     lis1.append([0,1])
     titles.append("Gender:")
     dicts.append(gender_dict)
@@ -113,6 +120,7 @@ if not clockS:
     dicts2.append(clock_dict)
     m2.append(clock)
 else:
+    max_count *= 3
     lis1.append([1,0x180000,0x3C170000])
     titles.append("Clock Settings:")
     dicts.append(clock_dict)
@@ -133,6 +141,7 @@ if not starterS:
     m2.append(starter)
 
 else:
+    max_count *= 3
     lis1.append([0x08000000 + 0x40000000 + 0x08000000,0x40000000 + 0x2 + 0x40000000,0x2 + 0x08000000 + 0x2])
     titles.append("Starter:")
     dicts.append(starter_dict)
@@ -140,21 +149,43 @@ else:
 for at in attr:
     start += at
 
+min_time = [int(x) for x in (input("Min Time (MM:SS:FF): ").split(":"))]
+max_time = [int(x) for x in (input("Max Time (MM:SS:FF): ").split(":"))]
+
+min_mf = min_time[0]
+min_s = 0 if min_time[0] != 59 else min_time[1]
+
 target = int(input("Target Seed: 0x"), 16)
 
 diff = target
+found = True
 gen([],0,0,len(lis1),lis1,diff,start)
+with progressbar.ProgressBar(max_value=max_count) as bar:
+    total_count += 1
+    bar.update(total_count)
+    while ((diff-close[0]) % 0x100 > 118) | ((diff-close[0]) // 0x100 > 59) | ((diff-close[0]) % 0x100 < min_mf) | ((diff-close[0]) // 0x100 < min_s):
+        g = close[0]-1
+        c = []
+        close = (0, [])
+        gen([],0,0,len(lis1),lis1,g,start)
+        total_count += 1
+        if total_count == max_count:
+            found = False
+            break
+        bar.update(total_count)
 
-while (diff-close[0]) % 0x100 > 118:
-    g = close[0]-1
-    c = []
-    close = (0, [])
-    gen([],0,0,len(lis1),lis1,g,start)
+if not found:
+    print("no possible seeds found with this setup")
+    exit(0)
+
+mf = (diff-close[0]) % 0x100
+s = (diff-close[0]) // 0x100
 
 print()
-print(hex(close[0]))
+print(f"Timeless Seed: {close[0]:04X}")
 
 print()
+print("---Checksum Setup Information---")
 print("TID:",tid)
 print("SID:",sid)
 print("Name:",n)
@@ -164,3 +195,14 @@ for i in range(len(titles2)):
 
 for i in range(len(titles)):
     print(titles[i],dicts[i][close[1][i]])
+
+print()
+print("---Time Information---")
+print(f"MINUTEFRAME: {mf} SECOND: {s}")
+print()
+print("Times to hit:")
+for minute in range(min_time[0], max_time[0]):
+    for second in range(min_time[1] if minute == min_time[0] else 0, max_time[1]+1 if minute == max_time[0] else 60):
+        for frame in range(min_time[2] if second == min_time[1] else 0, max_time[2]+1 if minute == max_time[1] else 60):
+            if minute + frame == mf and second == s:
+                print(f"{minute:02d}:{second:02d}:{frame:02d}")
