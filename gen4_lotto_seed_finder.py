@@ -31,7 +31,7 @@ def getSeed(hgss,lotto1,lotto2,lotto3):
         
 # print the hex output of the above function using inputs from the console
 print(hex(getSeed(
-    int("DPPT/HGSS (0/1): "),
+    int(input("DPPT/HGSS (0/1): ")),
     int(input("Lotto 1: ")), 
     int(input("Lotto 2: ")), 
     int(input("Lotto 3: ")))))
