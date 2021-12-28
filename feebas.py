@@ -22,7 +22,7 @@ rng = LCRNG.PokeRNGR(seed)
 
 rng.advance(f)
 
-high = rng.nextUShort()
+high = rng.nextHigh()
 
 if high % 100 < 50:
     print("Feebas Possible! Press A on", fstring)

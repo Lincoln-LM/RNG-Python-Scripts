@@ -9,31 +9,31 @@ def p(seed,vars):
     if seed % 0x1000000 == 0:
         print(f"{seed/0x28F5C29}% Searched")
     rng = PokeRNG(seed)
-    first = rng.nextUShort()
+    first = rng.nextHigh()
     if first//656 >= 75:
         return
-    slot_100 = rng.nextUShort()//656
+    slot_100 = rng.nextHigh()//656
     if slot_100 != 99:
         return
-    level = (rng.nextUShort() % 100) + 1
+    level = (rng.nextHigh() % 100) + 1
     if pressure:
-        if rng.nextUShort()//0x8000 == 0:
+        if rng.nextHigh()//0x8000 == 0:
             level = 100
     if level != target_level:
         return
     ccflag = 0
     if cutecharm:
-        ccflag = rng.nextUShort()//0x5556
-    hunt_nature = rng.nextUShort() // 0xa3e
+        ccflag = rng.nextHigh()//0x5556
+    hunt_nature = rng.nextHigh() // 0xa3e
     if not hunt_nature in target_natures:
         return
     if not ccflag:
         pid = hunt_nature+1
         while pid % 25 != hunt_nature:
-            pid = rng.nextUShort() | (rng.nextUShort() << 16)
+            pid = rng.nextHigh() | (rng.nextHigh() << 16)
     else:
         pid = hunt_nature
-    ivs = getIVs(rng.nextUShort(), rng.nextUShort())
+    ivs = getIVs(rng.nextHigh(), rng.nextHigh())
     for iv in range(6):
         if not iv_min[iv] <= ivs[iv] <= iv_max[iv]:
             return

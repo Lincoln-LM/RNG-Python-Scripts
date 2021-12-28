@@ -38,7 +38,7 @@ advances = 0
 while not done:
     sc = seedchecker4(rng.seed,2000,False)
     while not sc[0] or sc[1] >= maxDelay or sc[1] <= minDelay:
-        rng.nextUInt()
+        rng.next()
         advances += 1
         sc = seedchecker4(rng.seed,2000,False)
     print(advances, hex(rng.seed), seedchecker4(rng.seed,2000,False)[1])
@@ -46,5 +46,5 @@ while not done:
     if ch.lower() != "y":
         done = True
     else:
-        rng.nextUInt()
+        rng.next()
         advances += 1

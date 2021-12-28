@@ -14,7 +14,7 @@ sprites = ["Hiker", "Camper", "Picknicker"]
 
 print("Advance, Sprite")
 for advance in range(max_advances):
-    rval = rng.nextUShort()
+    rval = rng.nextHigh()
     rhiker_check = rval % 64 == 0
     rsprite = (rval % 3)
     check = True

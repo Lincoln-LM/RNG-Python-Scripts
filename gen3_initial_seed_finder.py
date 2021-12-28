@@ -11,7 +11,7 @@ advances = 0
 rng = LCRNG.PokeRNGR(targetSeed)
 seeds = []
 while (advances <= maxAdvances):
-    rng.nextUInt()
+    rng.next()
     advances += 1
     if rng.seed < 0xFFFF:
         print(advances,hex(rng.seed))

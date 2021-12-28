@@ -17,28 +17,28 @@ for advance in range(advances):
     go = LCRNG.PokeRNG(rng.seed)
     ivs = [0]*6
     rerolls = 0
-    slot = go.nextUShort()
+    slot = go.nextHigh()
     if bcc:
-        go.nextUShort()
+        go.nextHigh()
     tried = []
     last_advanced = 0
     advanced = 0
 
     while not 31 in ivs:
-        huntnature = go.nextUShort() % 25
+        huntnature = go.nextHigh() % 25
         advanced += 1
 
         while True:
-            low = go.nextUShort()
-            high = go.nextUShort()
+            low = go.nextHigh()
+            high = go.nextHigh()
             pid = (high << 16) | low
             nature = pid % 25
             advanced += 2
             if huntnature == nature:
                 break
 
-        iv1 = go.nextUShort()
-        iv2 = go.nextUShort()
+        iv1 = go.nextHigh()
+        iv2 = go.nextHigh()
         ivs = getIVs(iv1, iv2)
         advanced += 2
 
@@ -49,4 +49,4 @@ for advance in range(advances):
             break
     
     print(*tried,sep=" -> ")
-    rng.nextUInt()
+    rng.next()

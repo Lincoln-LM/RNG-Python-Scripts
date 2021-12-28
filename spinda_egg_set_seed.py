@@ -19,8 +19,8 @@ if target_pid_low == -1:
 rng.advance(initial_advances)
 for cnt in range(max_advances):
     go = LCRNG.PokeRNG(rng.seed)
-    low = go.nextUShort()
-    high = go.nextUShort()
+    low = go.nextHigh()
+    high = go.nextHigh()
     if (not pid_high_found) and low == target_pid_high:
         pid_high_found = True
         pid_high_advance = cnt
@@ -30,4 +30,4 @@ for cnt in range(max_advances):
     if pid_low_found & pid_high_found:
         print("Held Advance:",pid_low_advance+initial_advances,"Pickup Advance:",pid_high_advance+initial_advances)
         break
-    rng.nextUInt()
+    rng.next()

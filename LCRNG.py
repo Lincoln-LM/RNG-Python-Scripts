@@ -1,106 +1,82 @@
 # LCRNG Classes
 
-class PokeRNG:
+class LCRNG:
+    # template
+    mult = 0x0
+    add = 0x0
+    reversed = False
+    size = 32
+
     def __init__(self, seed):
+        # lazy way of generating bit mask
+        self.mask = (2 << (self.size - 1)) - 1
+        # reverse if needed
+        if self.reversed:
+            self.mult, self.add = self.reverse()
         self.seed = seed
 
-    def nextUInt(self):
-        self.seed = (self.seed * 0x41c64e6d + 0x6073) & 0xffffffff
-        return self.seed
-
-    def nextUShort(self):
-        return self.nextUInt() >> 16
-
-    def advance(self, advances):
-        for _ in range(advances):
-            self.nextUInt()
-
-class PokeRNGR:
-    def __init__(self, seed):
-        self.seed = seed
-
-    def nextUInt(self):
-        self.seed = (self.seed * 0xEEB9EB65 + 0xA3561A1) & 0xffffffff
-        return self.seed
-
-    def nextUShort(self):
-        return self.nextUInt() >> 16
-    
-    def advance(self, advances):
-        for _ in range(advances):
-            self.nextUInt()
+    def reverse(self):
+        # extended euclids algorithm thing to get your reverse mult
+        def find_reverse_mult(mult, limit): 
+            if mult == 0:
+                return 0,1
+            x1,y1 = find_reverse_mult(limit%mult, mult)
+            x = y1 - (limit//mult) * x1
+            y = x1
             
-class XDRNG:
-    def __init__(self, seed):
-        self.seed = seed
+            return x,y
 
-    def nextUInt(self):
-        self.seed = (self.seed * 0x343FD + 0x269EC3) & 0xffffffff
+        # simple way to find the reverse add, this effectively subtracts the normal add after being multiplied by the reverse_mult
+        def find_reverse_add(add,reverse_mult):
+            return ((-add * reverse_mult) & self.mask)
+
+        reverse_mult, _ = find_reverse_mult(self.mult, self.mask + 1)
+        reverse_mult &= self.mask
+        reverse_add = find_reverse_add(self.add, reverse_mult)
+
+        return reverse_mult, reverse_add
+
+    def next(self):
+        self.seed = (self.seed * self.mult + self.add) & self.mask
         return self.seed
 
-    def nextUShort(self):
-        return self.nextUInt() >> 16
+    def nextHigh(self, size = 16):
+        # get highest bits of size
+        return self.next() >> (self.size-size)
+
+    def nextFloat(self, size = 16):
+        # divide by max + 1 to get a float
+        return self.nextHigh(size) / (2<<size)
 
     def advance(self, advances):
         for _ in range(advances):
-            self.nextUInt()
+            self.next()
 
-class XDRNGR:
-    def __init__(self, seed):
-        self.seed = seed
+# set up specific lcrngs
+class PokeRNG(LCRNG):
+    mult = 0x41c64e6d
+    add = 0x6073
 
-    def nextUInt(self):
-        self.seed = (self.seed * 0xB9B33155 + 0xA170F641) & 0xffffffff
-        return self.seed
+class PokeRNGR(PokeRNG):
+    reversed = True
+            
+class XDRNG(LCRNG):
+    mult = 0x343FD
+    add = 0x269EC3
 
-    def nextUShort(self):
-        return self.nextUInt() >> 16
-    
-    def advance(self, advances):
-        for _ in range(advances):
-            self.nextUInt()
+class XDRNGR(XDRNG):
+    reversed = True
 
-class ARNG:
-    def __init__(self, seed):
-        self.seed = seed
+class ARNG(LCRNG):
+    mult = 0x6c078965
+    add = 1
 
-    def nextUInt(self):
-        self.seed = (self.seed * 0x6c078965 + 0x1) & 0xffffffff
-        return self.seed
-
-    def nextUShort(self):
-        return self.nextUInt() >> 16
-
-    def advance(self, advances):
-        for _ in range(advances):
-            self.nextUInt()
+class ARNGR(ARNG):
+    reversed = True
         
-class MRNG:
-    def __init__(self, seed):
-        self.seed = seed
-    
-    def nextUInt(self):
-        self.seed = (self.seed * 0x41C64E6D + 0x3039) & 0xffffffff
-        return self.seed
-    
-    def nextUShort(self):
-        return self.nextUInt() >> 16
-    
-    def advance(self, advances):
-        for _ in range(advances):
-            self.nextUInt()
+class MRNG(LCRNG):
+    mult = 0x41C64E6D
+    add = 0x3039
         
-class MRNGR:
-    def __init__(self, seed):
-        self.seed = seed
-    
-    def nextUInt(self):
-        self.seed = (self.seed * 0xEEB9EB65 + 0xFC77A683) & 0xffffffff
-        return self.seed
-    
-    def nextUShort(self):
-        return (self.nextUInt() >> 16) & 0x7FFF
-    
-    def advance(self, advances):
-        for _ in range(advances):
-            self.nextUInt()
+class MRNGR(MRNG):
+    reversed = True

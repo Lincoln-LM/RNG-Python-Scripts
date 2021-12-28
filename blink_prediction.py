@@ -1,13 +1,9 @@
 from LCRNG import XDRNG
 
-class RNG(XDRNG):
-    def nextFloat(self):
-        return self.nextUShort()/0x10000
-
 
 class BlinkTracker:
     def __init__(self, seed, interval=4):
-        self.rng = RNG(seed)
+        self.rng = XDRNG(seed)
         self.counter = 0
         self.interval = interval
         self.break_time = 0

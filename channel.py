@@ -9,9 +9,9 @@ natures = ['Hardy','Lonely','Brave','Adamant','Naughty','Bold','Docile','Relaxed
 def validate_jirachi(seed):
     rng = LCRNG.XDRNGR(seed)
 
-    num1 = rng.nextUShort()
-    num2 = rng.nextUShort()
-    num3 = rng.nextUShort()
+    num1 = rng.nextHigh()
+    num2 = rng.nextHigh()
+    num3 = rng.nextHigh()
 
     rng.advance(3)
     if (num1 <= 0x4000): # 6 advances
@@ -44,7 +44,7 @@ def validate_menu(seed):
 
     rng = LCRNG.XDRNGR(seed)
     while ((mask & 14) != 14):
-        num = rng.nextUInt() >> 30
+        num = rng.next() >> 30
 
         # Basically this check means that while rolling for 1, 2, and 3
         # We hit our original target meaning that we can't land on the target
@@ -68,11 +68,11 @@ for advance in range(advances):
         go = LCRNG.XDRNG(rng.seed)
 
         tid = 40122
-        sid = go.nextUShort()
+        sid = go.nextHigh()
         txor = tid^sid
         tsv = txor // 8
-        high = go.nextUShort()
-        low = go.nextUShort()
+        high = go.nextHigh()
+        low = go.nextHigh()
         
         # Skip Trainer info
         go.advance(3)
@@ -89,14 +89,14 @@ for advance in range(advances):
                 shiny = "Square"
         # if shiny != "Star":
         #     filter = False
-        #     rng.nextUInt()
+        #     rng.next()
         #     continue
 
         pid = (high << 16) | low
         nature = natures[pid%25]
         # if nature != "Jolly" and nature != "Careful" and nature != "Adamant":
         #     filter = False
-        #     rng.nextUInt()
+        #     rng.next()
         #     continue
         ivs = [0]*6
         for i in range(6):
@@ -104,12 +104,12 @@ for advance in range(advances):
                 i = 5
             elif i > 3:
                 i -= 1
-            ivs[i] = (go.nextUShort() >> 11)
+            ivs[i] = (go.nextHigh() >> 11)
         # if ivs[0] < 28 or ivs[1] < 28 or ivs[2] < 28 or ivs[4] < 28 or ivs[5] < 28:
         #     filter = False
-        #     rng.nextUInt()
+        #     rng.next()
         #     continue
 
         if filter:
             print(f"{start+advance}, {rng.seed:08X}, {shiny}, {sid:05}, {pid:08X}, {nature}, {str(ivs)}")
-    rng.nextUInt()
+    rng.next()

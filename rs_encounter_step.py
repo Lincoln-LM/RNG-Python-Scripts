@@ -21,25 +21,25 @@ rng.advance(initial_advances)
 
 for cnt in range(max_advances):
     go = PokeRNG(rng.seed)
-    if go.nextUShort() * 100 // 0xFFFF < compatabilities[compatability]:
-        low = go.nextUShort() % 0xfffe + 1
-        if go.nextUShort() % 2880 < rate*16:
+    if go.nextHigh() * 100 // 0xFFFF < compatabilities[compatability]:
+        low = go.nextHigh() % 0xfffe + 1
+        if go.nextHigh() % 2880 < rate*16:
             go.advance(2) # encounter slot
             
-            search_nature = go.nextUShort() % 25
+            search_nature = go.nextHigh() % 25
             pid = -1
             while pid % 25 != search_nature:
-                low = go.nextUShort()
-                high = go.nextUShort()
+                low = go.nextHigh()
+                high = go.nextHigh()
                 pid = (high << 16) | low
 
             go.advance(methods[method][0])
-            iv1 = go.nextUShort()
+            iv1 = go.nextHigh()
             go.advance(methods[method][1])
-            iv2 = go.nextUShort()
+            iv2 = go.nextHigh()
             ivs = getIVs(iv1,iv2)
         
             print(f"{initial_advances+cnt} {low:04X} {pid:08X} {natures[search_nature]} {'/'.join(str(iv) for iv in ivs)}")
         elif show_non_encounter:
             print(f"{initial_advances+cnt} {low:04X} No Encounter")
-    rng.nextUInt()
+    rng.next()

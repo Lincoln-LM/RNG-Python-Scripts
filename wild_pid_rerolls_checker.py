@@ -9,23 +9,23 @@ methods = {1:(0,0),2:(1,0),4:(0,1)}
 def getWild(seed,m):
     go = LCRNG.PokeRNG(seed)
     
-    go.nextUInt()
-    go.nextUInt()
-    go.nextUInt()
+    go.next()
+    go.next()
+    go.next()
     
-    searchNature = go.nextUShort() % 25
+    searchNature = go.nextHigh() % 25
     pidcheck = True
     rerolls = -1
     while pidcheck:
-        low = go.nextUShort()
-        high = go.nextUShort()
+        low = go.nextHigh()
+        high = go.nextHigh()
         pid = (high << 16) | low
         pidcheck = pid % 25 != searchNature
         rerolls += 1
     go.advance(m[0])
-    iv1 = go.nextUShort()
+    iv1 = go.nextHigh()
     go.advance(m[1])
-    iv2 = go.nextUShort()
+    iv2 = go.nextHigh()
     ivs = getIVs(iv1,iv2)
     return [hex(pid),natures[searchNature],ivs, rerolls]
 

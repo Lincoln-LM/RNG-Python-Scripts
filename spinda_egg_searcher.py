@@ -8,35 +8,35 @@ def getInitial(seed):
     advances = 0
     rng = LCRNG.PokeRNGR(seed)
     while (rng.seed > 0xFFFF):
-        rng.nextUInt()
+        rng.next()
         advances += 1
     return [hex(rng.seed), advances]
 
 def generateLower(seed, compatability):
     go = LCRNG.PokeRNG(seed)
-    if ((go.nextUShort() * 100) / 0xFFFF) < compatability:
-        pid = ((go.nextUShort() % 0xFFFE) + 1) & 0xFFFF
+    if ((go.nextHigh() * 100) / 0xFFFF) < compatability:
+        pid = ((go.nextHigh() % 0xFFFE) + 1) & 0xFFFF
         return pid
 
 def generateUpper(seed, lower, parents):
     go = LCRNG.PokeRNG(seed)
 
-    pid = go.nextUShort()
+    pid = go.nextHigh()
 
-    go.nextUInt()
-    iv1 = go.nextUShort()
-    iv2 = go.nextUShort()
+    go.next()
+    iv1 = go.nextHigh()
+    iv2 = go.nextHigh()
     ivs = getIVs(iv1,iv2)
 
-    go.nextUInt()
-    inh1 = go.nextUShort()
-    inh2 = go.nextUShort()
-    inh3 = go.nextUShort()
+    go.next()
+    inh1 = go.nextHigh()
+    inh2 = go.nextHigh()
+    inh3 = go.nextHigh()
     inh = [inh1,inh2,inh3]
 
-    par1 = go.nextUShort()
-    par2 = go.nextUShort()
-    par3 = go.nextUShort()
+    par1 = go.nextHigh()
+    par2 = go.nextHigh()
+    par3 = go.nextHigh()
     par = [par1,par2,par3]
 
     ivs = setInheritance(ivs, inh, par, parents)
@@ -93,7 +93,7 @@ while len(seeds1) == 0:
     origin = cache.recoverLower16BitsPID(pid1_high)
     for seed in origin:
         go = LCRNG.PokeRNGR(seed)
-        seed = go.nextUInt()
+        seed = go.next()
         seeds1.append(seed)
     if len(seeds1) == 0:
         pid1_high = ((pid1_high) + 0x1) & 0xFFFFFFFF
@@ -105,7 +105,7 @@ while len(seeds2) == 0:
     origin = cache.recoverLower16BitsPID(pid2_low)
     for seed in origin:
         go = LCRNG.PokeRNGR(seed)
-        seed = go.nextUInt()
+        seed = go.next()
         if ivq:
             ivs = generateUpper(seed,generateLower(seed,70),[parentaivs,parentbivs])
             check = True
