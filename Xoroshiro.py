@@ -19,6 +19,15 @@ class Xoroshiro(object):
         s1 ^= s0
         self.seed = [Xoroshiro.rotl(s0, 24) ^ s1 ^ ((s1 << 16) & Xoroshiro.ulongmask), Xoroshiro.rotl(s1, 37)]
         return result
+    
+    def previous(self):
+        s0, s1 = self.seed
+        s1 = Xoroshiro.rotl(s1, 27)
+        s0 = (s0 ^ s1 ^ (s1 << 16)) & Xoroshiro.ulongmask
+        s0 = Xoroshiro.rotl(s0, 40)
+        s1 ^= s0
+        self.seed = [s0,s1]
+        return (s0 + s1) & Xoroshiro.ulongmask
 
     def nextuint(self):
         return self.next() & Xoroshiro.uintmask
