@@ -80,3 +80,17 @@ class MRNG(LCRNG):
         
 class MRNGR(MRNG):
     reversed = True
+
+class BTPlay(LCRNG):
+    mult = 0x2E90EDD
+    add = 1
+
+class BTPlayR(BTPlay):
+    reversed = True
+
+class BTDay(LCRNG):
+    mult = 0x5D588B65
+    add = 1
+
+class BTDayR(BTDay):
+    reversed = True
