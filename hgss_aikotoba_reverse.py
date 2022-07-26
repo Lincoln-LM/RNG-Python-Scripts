@@ -36,7 +36,7 @@ def forward_aikotoba(words):
 
 def reverse_aikotoba(species, tid):
     """Reverse to get the needed passphrase from species and tid"""
-    # valid species values are in the range [8,12]
+    # valid species values are in the range [8,10]
     species_val = species + 8
     tid_high = tid >> 8
     tid_low = tid & 0xFF
