@@ -46,7 +46,7 @@ def reverse_aikotoba(species, tid):
     # reverse `tid = ((out[1] ^ out[0]) << 8) | (out[2] ^ out[0])`
     out_1 = tid_high ^ out_0
     out_2 = tid_low ^ out_0
-    # the entirety of out[3] is unknown as its not used directly in tid/species
+    # out_3 must be this for it to be valid
     out_3 = ((out_2 ^ out_0) * (out_0 + (out_1 ^ out_0)) & 0xFF)
     out = [out_0, out_1, out_2, out_3]
     cycles = out[3] & 0xF
