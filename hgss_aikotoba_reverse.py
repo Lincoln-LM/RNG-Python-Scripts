@@ -30,7 +30,7 @@ def forward_aikotoba(words):
         out[0] = ((low << 7) | (out[0] >> 1)) & 0xFF
     species = out[0] & 0xF - 8
     tid = ((out[1] ^ out[0]) << 8) | (out[2] ^ out[0])
-    if 0 <= species <= 3:
+    if 0 <= species <= 2 and out[3] == ((out[2] ^ out[0]) * (out[0] + (out[1] ^ out[0])) & 0xFF):
         return species, tid
     return None
 
@@ -40,50 +40,42 @@ def reverse_aikotoba(species, tid):
     species_val = species + 8
     tid_high = tid >> 8
     tid_low = tid & 0xFF
-    # the higher nibble of out[0] is unknown
-    for out_0_high in range(0x10):
-        # reverse `species = out[0] & 0xF - 8`
-        out_0 = species_val | (out_0_high << 4)
-        # reverse `tid = ((out[1] ^ out[0]) << 8) | (out[2] ^ out[0])`
-        out_1 = tid_high ^ out_0
-        out_2 = tid_low ^ out_0
-        # the entirety of out[3] is unknown as its not used directly in tid/species
-        for out_3 in range(0x100):
-            out = [out_0, out_1, out_2, out_3]
-            cycles = out[3] & 0xF
-            xor_val = (out[3] >> 4) | (out[3] & 0xF0)
-            for _ in range(cycles):
-                out_2_low = out[0] >> 7
-                # information is lost here but its added back later via out_2_low
-                out[0] <<= 1
-                out[0] &= 0xFF
-                for i in range(1,3):
-                    out[i - 1] |= out[i] >> 7
-                    out[i] <<= 1
-                    out[i] &= 0xFF
-                out[2] |= out_2_low
-            for i in range(3):
-                out[i] ^= xor_val
-            for _ in range(5):
-                out_3_low = out[0] >> 7
-                # information is lost here but its added back later via out_3_low
-                out[0] <<= 1
-                out[0] &= 0xFF
-                for i in range(1,4):
-                    out[i - 1] |= out[i] >> 7
-                    out[i] <<= 1
-                    out[i] &= 0xFF
-                out[3] |= out_3_low
-            # inverse of `out = [words[0] & 0xFF, -1, -1, -1]`
-            words = [out[0], -1, -1, -1]
-            invalid = False
-            for i in range(1, 4):
-                # its a lot easier to ignore `if words[i] < words[i - 1]:` than to implement it
-                # this will only give word lists that increase in value
-                words[i] = words[i - 1] + out[i]
-                # there are only 351 words to choose from
-                if words[i] > 350:
-                    invalid = True
-                    break
-            if not invalid:
-                return words
+    # reverse `species = out[0] & 0xF - 8`
+    # high nibble of out[0] is always 6
+    out_0 = species_val | (0x6 << 4)
+    # reverse `tid = ((out[1] ^ out[0]) << 8) | (out[2] ^ out[0])`
+    out_1 = tid_high ^ out_0
+    out_2 = tid_low ^ out_0
+    # the entirety of out[3] is unknown as its not used directly in tid/species
+    out_3 = ((out_2 ^ out_0) * (out_0 + (out_1 ^ out_0)) & 0xFF)
+    out = [out_0, out_1, out_2, out_3]
+    cycles = out[3] & 0xF
+    xor_val = (out[3] >> 4) | (out[3] & 0xF0)
+    for _ in range(cycles):
+        out_2_low = out[0] >> 7
+        # information is lost here but its added back later via out_2_low
+        out[0] <<= 1
+        out[0] &= 0xFF
+        for i in range(1,3):
+            out[i - 1] |= out[i] >> 7
+            out[i] <<= 1
+            out[i] &= 0xFF
+        out[2] |= out_2_low
+    for i in range(3):
+        out[i] ^= xor_val
+    for _ in range(5):
+        out_3_low = out[0] >> 7
+        # information is lost here but its added back later via out_3_low
+        out[0] <<= 1
+        out[0] &= 0xFF
+        for i in range(1,4):
+            out[i - 1] |= out[i] >> 7
+            out[i] <<= 1
+            out[i] &= 0xFF
+        out[3] |= out_3_low
+    # inverse of `out = [words[0] & 0xFF, -1, -1, -1]`
+    words = [out[0], -1, -1, -1]
+    for i in range(1, 4):
+        # there are only 351 words to choose from
+        words[i] = (words[i - 1] + out[i]) % 351
+    return words
