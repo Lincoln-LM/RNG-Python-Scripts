@@ -1,3 +1,7 @@
+"""
+Spinda egg pattern/iv searcher for RSFRLG
+"""
+
 from rngs import LCRNG, RNGCache
 
 def getIVs(iv1, iv2):

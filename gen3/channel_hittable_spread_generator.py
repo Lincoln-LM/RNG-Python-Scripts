@@ -1,4 +1,6 @@
-# Script to display jirachis you can hit, many functions taken from PokeFinder
+"""
+Hittable channel jirachi spread generator
+"""
 
 from rngs import LCRNG
 

@@ -1,4 +1,8 @@
-# proof of concept jirachi searcher
+"""
+Searching all permutations of settings for a wishmaker jirachi checksum
+not fully working
+"""
+
 import progressbar
 
 gender_dict = {0x0:"Male",0x1:"Female"}

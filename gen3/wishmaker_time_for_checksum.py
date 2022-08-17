@@ -1,3 +1,8 @@
+"""
+Calculating the time needed to get a checksum for wishmaker jirachi
+messy, not fully working, don't use
+"""
+
 checksum = 0x3248
 target = 0x261d
 hours = 0

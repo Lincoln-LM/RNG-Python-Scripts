@@ -1,4 +1,6 @@
-# Script to get Gen 3 initial seeds from a target seed
+"""
+Generate initial seeds based on a target seed and the maximum advances for the target
+"""
 
 from rngs import LCRNG
 
@@ -10,7 +12,7 @@ print("------------------------")
 advances = 0
 rng = LCRNG.PokeRNGR(targetSeed)
 seeds = []
-while (advances <= maxAdvances):
+while advances <= maxAdvances:
     rng.next()
     advances += 1
     if rng.seed < 0xFFFF:

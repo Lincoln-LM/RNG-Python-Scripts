@@ -1,4 +1,6 @@
-# Script to tell you if you can get feebas on a frame
+"""
+Gen 3 feebas prediction based on a set delay for the feebas rand
+"""
 
 from rngs import LCRNG
 

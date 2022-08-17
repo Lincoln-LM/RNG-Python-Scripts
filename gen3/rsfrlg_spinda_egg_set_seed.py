@@ -1,4 +1,6 @@
-# Script to find egg seeds for custom spinda on a set seed
+"""
+Spinda egg pattern generator for a set initial seed
+"""
 
 from rngs import LCRNG
 

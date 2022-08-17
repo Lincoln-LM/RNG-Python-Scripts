@@ -1,4 +1,7 @@
-# Script for predicting the Mt. Chimney Hiker in RSE
+"""
+Predicting whether or not a hiker will appear, along with the kind of hiker at Mt. Chimney
+"""
+
 from rngs import LCRNG
 
 initial_seed = int(input("Initial Seed: 0x"),16)

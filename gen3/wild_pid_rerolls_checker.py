@@ -1,4 +1,6 @@
-# Script to check pid rerolls for a frame
+"""
+Check the amount of times RSE regenerates a pid due to it not matching nature
+"""
 
 from rngs import LCRNG
 

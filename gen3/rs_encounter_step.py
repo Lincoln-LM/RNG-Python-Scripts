@@ -1,3 +1,8 @@
+"""
+Encounter step egg pid generation prediction
+not fully working, probably shouldn't use
+"""
+
 from rngs import LCRNG
 
 def getIVs(iv1, iv2):

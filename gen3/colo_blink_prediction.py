@@ -1,5 +1,7 @@
+"""
+Colosseum blink prediction
+"""
 from rngs import LCRNG
-
 
 class BlinkTracker:
     def __init__(self, seed, interval=4):
