@@ -1,7 +1,10 @@
-# script to reverse tinymt
+"""
+Reverse the sequence produced by TinyMT
+may not fully work properly due to highest bit
+"""
 
-from TinyMT import TinyMT
-from random import randint, seed
+from rngs import TinyMT
+from random import randint
 
 def reverse_tinymt(state):
     state_copy = state.copy()

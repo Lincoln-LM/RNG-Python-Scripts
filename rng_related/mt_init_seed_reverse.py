@@ -1,4 +1,7 @@
-import MT
+"""
+Reverse the initial seed of a MT state
+"""
+from rngs import MT
 # Script to get initial seed of a Mersenne Twister given the full untempered state
 # Adapted from https://github.com/ambionics/mt_rand-reverse/blob/master/reverse_mt_rand.py
 
@@ -93,6 +96,7 @@ def undo_shuffle(S000, S227):
     # no initial seed found
     return None
 
-rng = MT.MT(0x12345678)
-rng.next()
-print(hex(undo_shuffle(rng.state[0],rng.state[227])))
+if __name__ == "__main__":
+    rng = MT.MT(0x12345678)
+    rng.next()
+    print(hex(undo_shuffle(rng.state[0],rng.state[227])))

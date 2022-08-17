@@ -1,12 +1,13 @@
-"""O(log n) complexity way of advancing lcrng"""
-from rngs import LCRNG
+"""
+Efficiently jump ahead in the LCRNG sequence
+"""
 
 def modpow32(a_val, b_val):
     """(uint)(a_val ** b_val)"""
     return pow(a_val, b_val, 0x100000000)
 
 def advance(seed, advances, mult, add):
-    """Advance seed in O(log n) complexity"""
+    """Efficiently jump ahead in the LCRNG sequence"""
     advances_left = advances - 1
     mult_val = mult
     add_val = 1
@@ -25,6 +26,10 @@ def advance(seed, advances, mult, add):
         mult_val &= 0xFFFFFFFF
 
     final_mult = modpow32(mult, advances)
-    final_add = (add_val + add_remainder) * add
+    final_add = ((add_val + add_remainder) * add) & 0xFFFFFFFF
     return (seed * final_mult + final_add) & 0xFFFFFFFF
-print(hex(advance(0, 2**32 - 1, LCRNG.PokeRNG.mult, LCRNG.PokeRNG.add)))
+
+if __name__ == "__main__":
+    from rngs import LCRNG
+
+    print(hex(advance(0, 2**32 - 1, LCRNG.PokeRNG.mult, LCRNG.PokeRNG.add)))
