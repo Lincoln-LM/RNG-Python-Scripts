@@ -72,28 +72,29 @@ def reverse_tinymt(state):
     # Return our fully calculated previous state
     return state_copy
 
-# Create a TinyMT object with a random initial state
-rng = TinyMT(state=[randint(1,0xFFFFFFFF) for i in range(4)])
-# Chop off the unused bit for cleanliness
-rng.state[0] &= 0x7FFFFFFF
-# Print our initial state
-print(f"Initial State: \t\t\t{[f'{i:08X}' for i in rng.state]}")
-# Advance the rng once so we can test whether or not it works
-rng.nextState()
-# Print the state thats being fed to the function
-print(f"Next State: \t\t\t{[f'{i:08X}' for i in rng.state]}")
-# Calculate our initial state and print to compare
-print(f"Predicted Initial State: \t{[f'{i:08X}' for i in reverse_tinymt(rng.state)]}")
-
-# Test 10000 times
-print("Testing 10000 times....")
-for test in range(10000):
+if __name__ == "__main__":
+    # Create a TinyMT object with a random initial state
     rng = TinyMT(state=[randint(1,0xFFFFFFFF) for i in range(4)])
+    # Chop off the unused bit for cleanliness
     rng.state[0] &= 0x7FFFFFFF
-    initial_state = rng.state.copy()
+    # Print our initial state
+    print(f"Initial State: \t\t\t{[f'{i:08X}' for i in rng.state]}")
+    # Advance the rng once so we can test whether or not it works
     rng.nextState()
-    if initial_state != reverse_tinymt(rng.state):
-        print(f"Unsuccessfully predicted init:{initial_state} pred:{reverse_tinymt(rng.state)}")
-        break
-else:
-    print("Successfully predicted 10000 tinymt advances")
+    # Print the state thats being fed to the function
+    print(f"Next State: \t\t\t{[f'{i:08X}' for i in rng.state]}")
+    # Calculate our initial state and print to compare
+    print(f"Predicted Initial State: \t{[f'{i:08X}' for i in reverse_tinymt(rng.state)]}")
+
+    # Test 10000 times
+    print("Testing 10000 times....")
+    for test in range(10000):
+        rng = TinyMT(state=[randint(1,0xFFFFFFFF) for i in range(4)])
+        rng.state[0] &= 0x7FFFFFFF
+        initial_state = rng.state.copy()
+        rng.nextState()
+        if initial_state != reverse_tinymt(rng.state):
+            print(f"Unsuccessfully predicted init:{initial_state} pred:{reverse_tinymt(rng.state)}")
+            break
+    else:
+        print("Successfully predicted 10000 tinymt advances")
