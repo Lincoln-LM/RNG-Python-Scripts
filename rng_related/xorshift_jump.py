@@ -1,5 +1,5 @@
 """
-Efficiently jump ahead in the Xorshift128+ sequence
+Efficiently jump ahead in the Xorshift128 sequence
 method is described here: http://peteroupc.github.io/jump.html
 """
 import numpy as np
@@ -7,8 +7,8 @@ from rngs import Xorshift
 from sympy import Matrix
 from poly_jump import *
 
-def mat_xorshift128plus():
-    """Create matrix that describes the linear transformation of Xorshift128+'s advance function"""
+def mat_xorshift128():
+    """Create matrix that describes the linear transformation of Xorshift128's advance function"""
     return Matrix(np.block([
         [mat_zero(32),
          mat_identity(32),
@@ -51,7 +51,7 @@ def advance_via_jump(_rng: Xorshift.Xorshift, jump):
 if __name__ == "__main__":
     rng = Xorshift.Xorshift(0x12345678, 0x87654321, 0x87654321, 0x12345678)
     # characteristic polynomial can be precomputed (0x1000000010046d8b3f985d65ffd3c8001)
-    characteristic_poly = compute_characteristic_polynomial(mat_xorshift128plus())
+    characteristic_poly = compute_characteristic_polynomial(mat_xorshift128())
     # jump polynomial can be precomputed if the jump count is known ahead of time
     advance_via_jump(rng, compute_jump_polynomial(characteristic_poly, 2**128 - 2))
     print(hex(rng.seed[0]), hex(rng.seed[1]), hex(rng.seed[2]), hex(rng.seed[3]))
