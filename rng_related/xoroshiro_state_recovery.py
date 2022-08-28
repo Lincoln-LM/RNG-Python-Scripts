@@ -72,9 +72,12 @@ rng = Xoroshiro.Xoroshiro(seed0, seed1)
 # in SWSH this is done by monitoring the motions of a pokemon on its summary screen
 observations = np.array([[rng.rand(2)] for _ in range(128)], np.uint8)
 
-# get the inverse of the state-to-observations matrix in order to compute the state from observations
+# get the inverse of the state-to-observations matrix
+# in order to compute the state from observations
 observations_to_state_mat = mat_inverse(mat_state_to_observations())
 
+# the first column of ((observations_to_state_mat @ observations) % 2)
+# now contain the bits of the original state
 result = (x[0] for x in ((observations_to_state_mat @ observations) % 2))
 state = reduce(lambda p, q: (int(p) << 1) | int(q), result)
 
