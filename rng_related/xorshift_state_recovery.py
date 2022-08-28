@@ -1,5 +1,6 @@
 """
-Recovery of the internal 128 bit state of Xoroshiro128+ via observation of 128 rand(2) outputs
+Recovery of the internal 128 bit state of Xorshift128 via observation of 39 rand(16) outputs
+and the distances between them
 
 References:
 https://github.com/pattirudon/xoroshiroseed-java
