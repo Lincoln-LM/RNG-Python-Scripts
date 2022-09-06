@@ -33,13 +33,13 @@ def mssb_position(polynomial):
         result += 1
     return result
 
-def bit_mod_gf2(polynomial, modulus):
+def bit_mod_gf2(polynomial, modulus, last_bit_pos = 19937):
     """Compute polynomial % modulus in the field GF(2)"""
     # if the mssb of modulus is higher than polynomial: return polynomial
-    if polynomial >> 128 == 0:
+    if polynomial >> last_bit_pos == 0:
         return polynomial
-    poly_mssb = mssb_position(polynomial >> 128) + 128
-    shift_num = poly_mssb - 128
+    poly_mssb = mssb_position(polynomial >> last_bit_pos) + last_bit_pos
+    shift_num = poly_mssb - last_bit_pos
     # print(shift_num)
     # line up mssb
     modulus <<= shift_num
@@ -57,7 +57,7 @@ def bit_mod_gf2(polynomial, modulus):
     # remainder is left in polynomial
     return polynomial
 
-def bit_multmod_gf2(multiplicand, multiplier, modulus = None, size = 256):
+def bit_multmod_gf2(multiplicand, multiplier, modulus = None, size = 256, last_bit_pos = 128):
     """Calculate multiplicand * multiplier in the field GF(2)"""
     result = 0
     current_bit = 0
@@ -72,21 +72,21 @@ def bit_multmod_gf2(multiplicand, multiplier, modulus = None, size = 256):
         # bits outside of the mask wont be included in final result
         multiplicand &= mask
         current_bit += 1
-    return bit_mod_gf2(result, modulus)
+    return bit_mod_gf2(result, modulus, last_bit_pos)
 
-def bit_base2_powmod_gf2(power, modulus):
+def bit_base2_powmod_gf2(power, modulus, size = 256, last_bit_pos = 128):
     """Calculate 2 ** power % modulus in the field GF(2)"""
     base = 2
     result = 1
     # exponentiation by squares
     while power > 0:
         if power & 1:
-            result = bit_multmod_gf2(result, base, modulus)
+            result = bit_multmod_gf2(result, base, modulus, size, last_bit_pos)
 
         power >>= 1
-        base = bit_multmod_gf2(base, base, modulus)
+        base = bit_multmod_gf2(base, base, modulus, size, last_bit_pos)
     return result
 
-def compute_jump_polynomial(characteristic_polynomial, jump_count):
+def compute_jump_polynomial(characteristic_polynomial, jump_count, size = 256, last_bit_pos = 128):
     """Compute jump polynomial from characteristic polynomial and the distance to jump"""
-    return bit_base2_powmod_gf2(jump_count, characteristic_polynomial)
+    return bit_base2_powmod_gf2(jump_count, characteristic_polynomial, size, last_bit_pos)
