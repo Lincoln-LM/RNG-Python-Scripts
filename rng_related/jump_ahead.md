@@ -147,7 +147,7 @@ The definition of **J** (the result of inputting **A** to the jump polynomial) i
 
 **J** = **A**ᵛ = g(**A**) = a₁**A**ᵏ⁻¹ + ... + aₖ₋₁**A** + aₖ**I**
 
-and therefore the application of this polnomial via **Jx** is defined as:
+and therefore the application of this polynomial via **Jx** is defined as:
 
 **Jx** = (a₁**A**ᵏ⁻¹ + ... + aₖ₋₁**A** + aₖ**I**)x
 
@@ -157,7 +157,7 @@ or
 
 via Horner's method for polynomial evaluation.
 
-Remembering that **Ax** descibes advancing the RNG 1 step, and that aⱼ is the the j-th coefficient of the jump polynomial, **Jx** can be computed via the addition of up to *k* state vectors.
+Remembering that **Ax** describes advancing the RNG 1 step, and that aⱼ is the the j-th coefficient of the jump polynomial, **Jx** can be computed via the addition of up to *k* state vectors.
 
 This method of computing the jump can be done as follows:
 
@@ -201,7 +201,7 @@ Jumping *v* advances when *v* is static can easily be done by computing the jump
 
 ### Computing jump polynomial during execution
 
-One method of jumping an arbitrary about of advances would be to compute the jump polynomial during execution of the program and then proceeding to apply it. This method works, though it's performance greatly suffers from the expensive GF(2) modulo function that must be repeatedly run.
+One method of jumping an arbitrary amount of advances would be to compute the jump polynomial during execution of the program and then proceeding to apply it. This method works, though it's performance greatly suffers from the expensive GF(2) modulo function that must be repeatedly run.
 
 ### Precomputed step jump polynomials
 
