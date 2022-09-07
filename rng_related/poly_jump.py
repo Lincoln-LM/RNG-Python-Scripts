@@ -33,7 +33,7 @@ def mssb_position(polynomial):
         result += 1
     return result
 
-def bit_mod_gf2(polynomial, modulus, last_bit_pos = 19937):
+def bit_mod_gf2(polynomial, modulus, last_bit_pos = 128):
     """Compute polynomial % modulus in the field GF(2)"""
     # if the mssb of modulus is higher than polynomial: return polynomial
     if polynomial >> last_bit_pos == 0:
