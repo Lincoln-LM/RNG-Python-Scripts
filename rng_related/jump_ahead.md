@@ -166,10 +166,10 @@ import numpy as np
 from typing import List
 
 state: np.ndarray # k-bit state column vector
-result: np.ndarray # k-bit state column vector
 A: np.ndarray # k×k transition matrix
 jump_polynomial: int # integer that stores each coefficient of the jump polynomial as individual bits
 k: int = state.size # amount of bits in state
+result: np.ndarray = np.zeros((k, 1)) # k-bit state column vector
 
 for j in range(0, k):
     if (jump_polynomial >> j) & 0b1 == 1: # only add if aⱼ₊₁ == 1, otherwise Aaⱼ₊₁x = 0 and addition is pointless
@@ -184,8 +184,8 @@ or without matrix multiplication as:
 rng: object # PRNG object
 rng.state: int # full state of the rng, method can easily be adapted to this being List[int]
 rng.next_state: callable # method that advances the state of the rng by 1 step
-result_state: int # the state of the rng after jump
 jump_polynomial: int # integer that stores each coefficient of the jump polynomial as individual bits
+result_state: int = 0 # the state of the rng after jump
 
 while jump_polynomial > 0:
     if jump_polynomial & 1:
@@ -245,15 +245,16 @@ from typing import List
 rng: object # PRNG object
 rng.state: int # full state of the rng, method can easily be adapted to this being List[int]
 rng.next_state: callable # method that advances the state of the rng by 1 step
-result_state: int # the state of the rng after jump
 jump_polynomials: List[int] # list of k jump polynomials that describe jumping 2**k steps
 jump_count: int # amount of steps to jump
 index: int = 0 # current bit position of jump_count
+result_state: int = 0 # the state of the rng after jump
 
 while jump_count > 0:
     if jump_count & 1: # equivalent of modulo 2, if there is 0 in this position we don't need to jump
         # jump 2**index steps
         jump_polynomial = jump_polynomials[index]
+        result_state = 0
         while jump_polynomial > 0:
             if jump_polynomial & 1:
                 result_state ^= rng.state
@@ -268,16 +269,17 @@ from typing import List
 rng: object # PRNG object
 rng.state: int # full state of the rng, method can easily be adapted to this being List[int]
 rng.next_state: callable # method that advances the state of the rng by 1 step
-result_state: int # the state of the rng after jump
 jump_polynomials: List[List[int]] # list of k // 8 lists of 255 jump polynomials that describe jumping p * 2**(i * 8) steps, where i = the index of the main list and p = the index of the sub-list + 1
 jump_count: int # amount of steps to jump
 index: int = 0 # current byte position of jump_count
+result_state: int = 0 # the state of the rng after jump
 
 while jump_count > 0:
     position_value = jump_count & 0xFF # equivalent of modulo 256
     if position_value: # if there is 0 in this position we don't need to jump
         # jump position_value * 2**(index * 8) steps
         jump_polynomial = jump_polynomials[index][position_value - 1]
+        result_state = 0
         while jump_polynomial > 0:
             if jump_polynomial & 1:
                 result_state ^= rng.state
