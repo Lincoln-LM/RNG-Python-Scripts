@@ -57,25 +57,11 @@ class JumpableMT:
 
 def advance_via_jump(_rng: JumpableMT, jump):
     """Apply polynomial to rng"""
-    # as per https://github.com/bashtage/randomgen/blob/main/randomgen/src/mt19937/
     temp = JumpableMT()
-    temp.state = [0 for _ in range(624)]
-
-    for i in range(19937 - 1, 0, -1):
-        if (jump >> i) & 1:
-            break
-    if i > 0:
-        temp.copy_state(_rng)
-        temp.next()
-        i -= 1
-        for i in range(i, 0, -1):
-            if (jump >> i) & 1:
-                temp.add_state(_rng)
-            temp.next()
-        if jump & 1:
+    for bit in range(mssb_position(jump) + 1):
+        if jump & (1 << bit):
             temp.add_state(_rng)
-    elif i == 0:
-        temp.copy_state(_rng)
+        _rng.next()
     _rng.copy_state(temp)
 
 if __name__ == "__main__":
