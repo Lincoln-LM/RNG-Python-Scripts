@@ -97,11 +97,11 @@ def pohlig_hellman(advance_matrix, jump_mat, primes, order):
 if __name__ == "__main__":
     start_rng = Xoroshiro.Xoroshiro(0x1234BEEFDEAD8765, 0x5678DEAD4321BEEF)
     end_rng = Xoroshiro.Xoroshiro(*start_rng.seed.copy())
-    advance_via_jump(end_rng, compute_jump_polynomial(0x10008828e513b43d5095b8f76579aa001, 2 ** 83))
+    advance_via_jump(end_rng, compute_jump_polynomial(0x10008828e513b43d5095b8f76579aa001, 2 ** 24))
     total = 0
     effective_for = 1
     for i, prime in enumerate(prime_factors(2 ** 128 - 1)):
-        total += prime
+        total += ceil(sqrt(prime))
         effective_for *= prime
         print(f"{i=} {total=} effective for 2**{log2(effective_for)}")
     print()
