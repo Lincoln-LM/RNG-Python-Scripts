@@ -25,6 +25,18 @@ def compute_characteristic_polynomial(mat):
     """Compute the characteristic polynomial of a transformation matrix in the field GF(2))"""
     return reduce(lambda p, q: (p << 1) | (q & 1), mat.charpoly().all_coeffs())
 
+def gf2_mat_pow(mat, exp, size = 64):
+    """Compute mat**exp under GF(2)"""
+    base = mat.copy()
+    temp = mat_identity(size)
+    while exp:
+        if exp & 1:
+            temp = (temp @ base) % 2
+
+        base = (base @ base) % 2
+        exp >>= 1
+    return temp
+
 def mssb_position(polynomial):
     """Get the position of the most significant set bit in polynomial"""
     result = -1
