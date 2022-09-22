@@ -21,8 +21,9 @@ def read_narc(name, index):
         fat_top = get_int(file.read(2))
         file.seek(fat_top + 4)
         size = get_int(file.read(4))
-        # file_cnt =
-        get_int(file.read(2))
+        # file_cnt = get_int(
+        file.read(2)
+        # )
         fnt_top = fat_top + size
         file.seek(fnt_top + 4)
         img_top = fnt_top + get_int(file.read(4))
@@ -35,3 +36,11 @@ def read_narc(name, index):
 
         data = file.read(bottom - top)
         return data
+
+def read_narc_file_cnt(name):
+    """Read file count from narc file"""
+    with open(name, "rb") as file:
+        file.seek(12)
+        fat_top = get_int(file.read(2))
+        file.seek(fat_top + 4 + 4)
+        return get_int(file.read(2))
