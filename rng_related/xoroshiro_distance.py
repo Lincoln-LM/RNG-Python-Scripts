@@ -79,9 +79,9 @@ def chinese_remainder_theorem(mods, remainders):
     """Chinese remainder theorem for solving linear congruences"""
     total = 0
     product = reduce(lambda a, b: a * b, mods)
-    for mod, reaminder in zip(mods, remainders):
+    for mod, remainder in zip(mods, remainders):
         p = product // mod
-        total += reaminder * pow(p, -1, mod) * p
+        total += remainder * pow(p, -1, mod) * p
     return total % product
 
 def pohlig_hellman(advance_matrix, jump_mat, primes, order):
